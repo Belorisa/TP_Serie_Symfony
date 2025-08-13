@@ -1,3 +1,20 @@
 body {
-    background-color: skyblue;
+    background: linear-gradient(cornflowerblue,chocolate);
+    background-attachment: fixed;
+    background-position: center center;
+    background-size: cover;
+
+
+}
+
+nav ul {
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+    gap: 2em;
+}
+
+nav li a{
+    text-decoration: none;
+    color: white;
 }
