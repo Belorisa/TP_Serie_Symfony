@@ -19,3 +19,19 @@ nav li a{
     text-decoration: none;
     color: white;
 }
+
+th,td {
+    border: 1px solid;
+    text-align: center;
+
+}
+table {
+    table-layout: auto;
+    width: 70%;
+
+}
+
+th {
+    background-color: lightsteelblue;
+
+}
