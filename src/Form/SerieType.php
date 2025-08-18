@@ -24,8 +24,8 @@ class SerieType extends AbstractType
             ->add('genres')
             ->add('firstAirDate',DateType::class,['widget' => 'single_text','required' => true])
             ->add('lastAirDate',DateType::class,['widget' => 'single_text','required' => false])
-            ->add('backdrop',FileType::class,['label' => 'backdrop','required' => false])
-            ->add('poster',FileType::class,['label' => 'poster','required' => false])
+            ->add('backdrop')
+            ->add('poster')
             ->add('submit', SubmitType::class,['label'=>'Ajouter une serie'])
         ;
     }

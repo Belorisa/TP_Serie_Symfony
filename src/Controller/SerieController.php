@@ -60,10 +60,13 @@ final class  SerieController extends AbstractController
         );
     }
 
-    #[Route('/{id}}',name: 'detail',requirements: ['page' => '\d+'])]
-    public function detail(SerieRepository $serie,int $id): Response
+    #[Route('/{id}}',name: 'detail',requirements: ['id' => '\d+'])]
+    public function detail(Serie $serie): Response
     {
-        $serie = $serie->find($id);
+        if(!$serie)
+        {
+            throw $this->createNotFoundException('Pas de série pour cet id');
+        }
         return $this->render('serie/detail.html.twig', ['serie'=>$serie]);
     }
 
@@ -86,7 +89,27 @@ final class  SerieController extends AbstractController
 
         if ($form->isSubmitted()) {
             //dd($serie);
-            $serie->setDateCreated(new \DateTime());
+            $em->persist($serie);
+            $em->flush();
+
+            $this->addFlash("success",'une sérié a été enregistrée');
+
+            return $this->redirectToRoute('detail',['id'=>$serie->getId()]);
+        }
+        return $this->render('serie/edit.html.twig',[
+            'serie_form' => $form,
+        ]);
+    }
+
+    #[Route('/serie/update/{id}',name: 'serie_update')]
+    public function editSerie(Request $request,EntityManagerInterface $em,Serie $serie): Response
+    {
+        $form = $this->createForm(SerieType::class, $serie);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            //dd($serie);
             $em->persist($serie);
             $em->flush();
 
