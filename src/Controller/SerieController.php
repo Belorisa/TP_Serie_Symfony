@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class SerieController extends AbstractController
+final class  SerieController extends AbstractController
 {
 //    #[Route('/serie', name: 'app_serie')]
 //    public function index(EntityManagerInterface $em): Response
@@ -38,7 +38,7 @@ final class SerieController extends AbstractController
 
         $criterias =            [
             'status' => 'Returning',
-            'genres' => 'Action'
+            'genres' => 'Comedy'
         ];
         $series = $serieRepository->findBy(
             $criterias,

@@ -5,6 +5,7 @@
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
+/public/upload/
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
@@ -16,5 +17,6 @@
 
 ###> symfony/asset-mapper ###
 /public/assets/
+
 /assets/vendor/
 ###< symfony/asset-mapper ###
