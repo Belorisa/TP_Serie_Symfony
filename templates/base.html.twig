@@ -17,8 +17,19 @@
         <ul>
             <li> <a href="{{ path('home') }}">Home</a></li>
             <li> <a href="{{ path('app_serie') }}">Catalogue</a></li>
+            <li> <a href="{{ path('serie_create') }}">Ajouter</a></li>
         </ul>
     </nav>
+    {% for type, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ type }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+
+
         {% block body %}
 
         {% endblock %}

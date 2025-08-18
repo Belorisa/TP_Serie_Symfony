@@ -9,38 +9,48 @@
 {% block body %}
     <h2>Catalogue</h2>
 
-    {% if page > 1 %}
-        <a href="{{ path('app_serie', {'page' : page-1}) }}">Page Précédente</a>
-    {% endif %}
+    <section>
+        {% if page > 1 %}
+            <a href="{{ path('app_serie', {'page' : page-1}) }}">Page Précédente</a>
+        {% endif %}
 
-    {% if page < totalPages %}
-        <a href="{{ path('app_serie', {'page' : page+1}) }}">Page Suivante</a>
-    {% endif %}
-    <table>
-        <tr>
-            <th>Id</th>
-            <th>Nom</th>
-            <th>Genre</th>
-            <th>Status</th>
-            <th>Vote</th>
-            <th>Popularity</th>
-            <th>First Air date</th>
-            <th>Last Air date</th>
-        </tr>
+        {% if page < totalPages %}
+            <a href="{{ path('app_serie', {'page' : page+1}) }}">Page Suivante</a>
+        {% endif %}
+    </section>
+
+    <section class="series-list">
         {% for serie in series %}
-            <tr>
-                <td>{{ serie.id }}</td>
-                <td>{{ serie.name }}</td>
-                <td>{{ serie.genres }}</td>
-                <td>{{ serie.status }}</td>
-                <td>{{ serie.vote }}</td>
-                <td>{{ serie.popularity }}</td>
-                <td>{{ serie.firstAirDate|date("Y/m/d") }}</td>
-                <td>{{ serie.lastAirDate ? serie.lastAirDate|date("Y/m/d") : '' }}</td>
-            </tr>
+        <a href="{{ path('detail',{id : serie.id}) }}">
+            <img src="{{ asset('upload/posters/series/') ~ serie.poster }}" width="250px" loading="lazy">
+        </a>
         {% endfor %}
+    </section>
+{#    <table>#}
+{#        <tr>#}
+{#            <th>Id</th>#}
+{#            <th>Nom</th>#}
+{#            <th>Genre</th>#}
+{#            <th>Status</th>#}
+{#            <th>Vote</th>#}
+{#            <th>Popularity</th>#}
+{#            <th>First Air date</th>#}
+{#            <th>Last Air date</th>#}
+{#        </tr>#}
+{#        {% for serie in series %}#}
+{#            <tr>#}
+{#                <td>{{ serie.id }}</td>#}
+{#                <td>{{ serie.name }}</td>#}
+{#                <td>{{ serie.genres }}</td>#}
+{#                <td>{{ serie.status }}</td>#}
+{#                <td>{{ serie.vote }}</td>#}
+{#                <td>{{ serie.popularity }}</td>#}
+{#                <td>{{ serie.firstAirDate|date("Y/m/d") }}</td>#}
+{#                <td>{{ serie.lastAirDate ? serie.lastAirDate|date("Y/m/d") : '' }}</td>#}
+{#            </tr>#}
+{#        {% endfor %}#}
 
-    </table>
+{#    </table>#}
 {% endblock %}
 
 
