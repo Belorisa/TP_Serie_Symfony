@@ -5,9 +5,11 @@ namespace App\Entity;
 use App\Repository\SerieRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SerieRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[ORM\UniqueConstraint(columns: ['name','first_air_date'] )]
 class Serie
 {
     #[ORM\Id]
@@ -16,12 +18,16 @@ class Serie
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Ce champ ne doit pas être vide')]
+    #[Assert\Length(min: 2, max: 30)]
+    #[Assert\Unique]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $overview = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Choice(choices: ['Returning','Ended','Cancelled'],message: 'Ce choix n\'est pas valide ')]
     private ?string $status = null;
 
     #[ORM\Column(nullable: true)]
@@ -37,6 +43,19 @@ class Serie
     private ?\DateTime $firstAirDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE,nullable: true)]
+    #[Assert\GreaterThan(propertyPath: 'firstAirDate'  )]
+    #[Assert\When(
+        expression: "this.getStatus() == 'Ended' || this.getStatus() == 'Cancelled'",
+        constraints: [
+            new Assert\NotBlank(message: 'Ce champ n\'est pas valide'),
+        ]
+    )]
+    #[Assert\When(
+        expression: "this.getStatus() == 'Returning'",
+        constraints: [
+            new Assert\Blank(message: 'Ce champ doit être vide'),
+        ]
+    )]
     private ?\DateTime $lastAirDate = null;
 
     #[ORM\Column(length: 255, nullable: true)]

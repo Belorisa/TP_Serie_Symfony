@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Serie;
+use App\Entity\Wish;
 use App\Form\SerieType;
 use App\Repository\SerieRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -60,7 +61,7 @@ final class  SerieController extends AbstractController
         );
     }
 
-    #[Route('/{id}}',name: 'detail',requirements: ['id' => '\d+'])]
+    #[Route('/{id}',name: 'detail',requirements: ['id' => '\d+'])]
     public function detail(Serie $serie): Response
     {
         if(!$serie)
@@ -87,7 +88,7 @@ final class  SerieController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             //dd($serie);
             $em->persist($serie);
             $em->flush();
@@ -108,7 +109,7 @@ final class  SerieController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             //dd($serie);
             $em->persist($serie);
             $em->flush();
@@ -120,6 +121,19 @@ final class  SerieController extends AbstractController
         return $this->render('serie/edit.html.twig',[
             'serie_form' => $form,
         ]);
+    }
+
+    #[Route('/serie/delete/{id}',name: 'serie_delete')]
+    public function deleteWish(Serie $serie,EntityManagerInterface $em,Request $request): Response
+    {
+        if($this->isCsrfTokenValid('delete'.$serie->getId(), $request->query->get('token'),)){
+            $wishToDelete = $em->getRepository(Serie::class)->find($serie->getId());
+            $em->remove($wishToDelete);
+            $this->addFlash('success', 'Wish deleted successfully');
+            $em->flush();
+            return $this->redirectToRoute("app_serie");
+        }
+        return $this->redirectToRoute('detail',['id'=>$serie->getId()]);
     }
 
 

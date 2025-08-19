@@ -18,7 +18,7 @@ class SerieType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class, ['label' => 'Nom de la série','required' => true])
+            ->add('name', TextType::class, ['label' => 'Nom de la série','required' => false])
             ->add('overview',TextareaType::class, ['label' => 'Description','required' => false])
             ->add('status',ChoiceType::class, ['choices' =>['En Cours'=>'Returning','Terminer'=>'Ended','Annuler'=>'Cancelled'],'placeholder' => '--Choisissez un Statut--','required' => true])
             ->add('genres')
