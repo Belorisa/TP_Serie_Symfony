@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class SerieType extends AbstractType
 {
@@ -25,7 +26,20 @@ class SerieType extends AbstractType
             ->add('firstAirDate',DateType::class,['widget' => 'single_text','required' => true])
             ->add('lastAirDate',DateType::class,['widget' => 'single_text','required' => false])
             ->add('backdrop')
-            ->add('poster')
+            ->add('poster_file',FileType::class, ['label' => 'Poster','required' => false,'mapped' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '1024k',
+                        'maxSizeMessage' => 'Poster size is too big ({{ limit }})',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/jpg',
+                        ],
+                        'mimeTypesMessage' => 'Please upload a valid image file ({{ limit }})',
+                        ])
+                    ]
+                    ])
             ->add('submit', SubmitType::class,['label'=>'Ajouter une serie'])
         ;
     }

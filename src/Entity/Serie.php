@@ -20,7 +20,6 @@ class Serie
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Ce champ ne doit pas être vide')]
     #[Assert\Length(min: 2, max: 30)]
-    #[Assert\Unique]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

@@ -9,9 +9,11 @@ use App\Repository\SerieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 final class  SerieController extends AbstractController
 {
@@ -81,7 +83,7 @@ final class  SerieController extends AbstractController
     }
 
     #[Route('/serie/create',name: 'serie_create')]
-    public function addSerie(Request $request,EntityManagerInterface $em): Response
+    public function addSerie(Request $request,EntityManagerInterface $em,SluggerInterface $slugger,ParameterBagInterface $parameterBag): Response
     {
         $serie = new Serie();
         $form = $this->createForm(SerieType::class, $serie);
@@ -89,6 +91,13 @@ final class  SerieController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form->get('poster_file')->getData();
+            if ($file instanceof UploadedFile) {
+                $name = $slugger->slug( $serie->getName()).'-'.uniqid().'.'.$file->guessExtension();
+                $dir = $parameterBag->get('serie')['poster_directory'];
+                $file->move($dir,$name);
+                $serie->setPoster($name);
+            }
             //dd($serie);
             $em->persist($serie);
             $em->flush();
@@ -103,13 +112,24 @@ final class  SerieController extends AbstractController
     }
 
     #[Route('/serie/update/{id}',name: 'serie_update')]
-    public function editSerie(Request $request,EntityManagerInterface $em,Serie $serie): Response
+    public function editSerie(Serie $serie,Request $request,EntityManagerInterface $em,SluggerInterface $slugger,ParameterBagInterface $parameterBag): Response
     {
         $form = $this->createForm(SerieType::class, $serie);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form->get('poster_file')->getData();
+            if ($file instanceof UploadedFile) {
+                $name = $slugger->slug( $serie->getName()).'-'.uniqid().'.'.$file->guessExtension();
+                $dir = $parameterBag->get('serie')['poster_directory'];
+                $file->move($dir,$name);
+                if($serie->getPoster()&&file_exists($dir.'/'.$serie->getPoster())){
+                        unlink($dir.'/'.$serie->getPoster());
+                    }
+                $serie->setPoster($name);
+            }
+
             //dd($serie);
             $em->persist($serie);
             $em->flush();
