@@ -22,6 +22,13 @@
 
 <p>{{ serie.overview }}</p>
 
+    <ul>
+        {% for season in serie.seasons %}
+            <li>Season {{ season.number}} - {{ season.firstAirDate|date('d/m/Y')}} - {{ season.overview}} </li>
+            <img src="{{ asset('upload/posters/seasons/'~season.poster) }}" alt=" ">
+        {% endfor%}
+    </ul>
+
     <a href="{{ path('serie_update',{id: serie.id}) }}">Editer</a>
     <a href="{{ path('serie_delete',{id: serie.id,'token':csrf_token('delete'~serie.id)}) }}"><button type="button" class="btn btn-danger">Supprimer</button></a>
 
