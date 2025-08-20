@@ -17,7 +17,8 @@
         <ul>
             <li> <a href="{{ path('home') }}">Home</a></li>
             <li> <a href="{{ path('app_serie') }}">Catalogue</a></li>
-            <li> <a href="{{ path('serie_create') }}">Ajouter</a></li>
+            <li> <a href="{{ path('serie_create') }}">Ajouter Série</a></li>
+            <li> <a href="{{ path('season_create') }}">Ajouter Saison</a> </li>
         </ul>
     </nav>
     {% for type, messages in app.flashes %}
