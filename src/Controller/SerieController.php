@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Serie;
 use App\Entity\Wish;
 use App\Form\SerieType;
+use App\Help\FileUploader;
 use App\Repository\SerieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -80,7 +81,7 @@ final class  SerieController extends AbstractController
     }
 
     #[Route('/serie/create',name: 'serie_create')]
-    public function addSerie(Request $request,EntityManagerInterface $em,SluggerInterface $slugger,ParameterBagInterface $parameterBag): Response
+    public function addSerie(Request $request,EntityManagerInterface $em,ParameterBagInterface $parameterBag,FileUploader $fileUploader): Response
     {
         $serie = new Serie();
         $form = $this->createForm(SerieType::class, $serie);
@@ -90,10 +91,8 @@ final class  SerieController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form->get('poster_file')->getData();
             if ($file instanceof UploadedFile) {
-                $name = $slugger->slug( $serie->getName()).'-'.uniqid().'.'.$file->guessExtension();
-                $dir = $parameterBag->get('serie')['poster_directory'];
-                $file->move($dir,$name);
-                $serie->setPoster($name);
+               $name = $fileUploader->upload($file,$serie->getPoster(),$parameterBag->get('serie')['poster_directory']);
+               $serie->setPoster($name);
             }
             //dd($serie);
             $em->persist($serie);
@@ -109,7 +108,7 @@ final class  SerieController extends AbstractController
     }
 
     #[Route('/serie/update/{id}',name: 'serie_update')]
-    public function editSerie(Serie $serie,Request $request,EntityManagerInterface $em,SluggerInterface $slugger,ParameterBagInterface $parameterBag): Response
+    public function editSerie(Serie $serie,Request $request,EntityManagerInterface $em,ParameterBagInterface $parameterBag,FileUploader $fileUploader): Response
     {
         $form = $this->createForm(SerieType::class, $serie);
 
@@ -118,9 +117,9 @@ final class  SerieController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form->get('poster_file')->getData();
             if ($file instanceof UploadedFile) {
-                $name = $slugger->slug( $serie->getName()).'-'.uniqid().'.'.$file->guessExtension();
                 $dir = $parameterBag->get('serie')['poster_directory'];
-                $file->move($dir,$name);
+                $name = $fileUploader->upload($file,$serie->getPoster(),$dir);
+                $serie->setPoster($name);
                 if($serie->getPoster()&&file_exists($dir.'/'.$serie->getPoster())){
                         unlink($dir.'/'.$serie->getPoster());
                     }
